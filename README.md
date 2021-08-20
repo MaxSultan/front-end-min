@@ -6,12 +6,16 @@ with npm: `npm install front-end-min`
 
 # Documentataion
 
-resizer is a function that accepts an options object. The object has the following properties:
+resizer is a function that accepts 2 parameters: a file and an options object.
 
+### file
 file (required) - 
 image url | image blob data | an image file
 if not added the functions fails immediately and returns an error.
 Currently only supports .jpeg and .png files
+
+### options object
+ The object has the following properties:
 
 aspectRatioPreserved (Boolean) --
 true|false
