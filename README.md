@@ -125,8 +125,6 @@ image url | image blob data | an image file
 if not added the functions fails immediately and returns an error.
 Currently only supports .jpeg and .png files
 
-#### aspectRatioPreserved
-
 #### aspectRatioPreserved (Boolean) --
 true|false
 true - keep the proportions of the image (aspect ratio) the same
@@ -190,5 +188,9 @@ a blob representing file data
 
 ### return
 returns a promise that can access a data url in the `.then()`
+
+# Dependencies
+
+webpack and and webpack cli are included as dev dependencies
 
 Example open source project using front-end-min can bee seen here: https://github.com/MaxSultan/img-compressor 
