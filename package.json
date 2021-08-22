@@ -1,6 +1,6 @@
 {
   "name": "front-end-min",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "minify and resize images on the front end",
   "main": "dist/front-end-min.js",
   "module": "index.js",
