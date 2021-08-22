@@ -8,6 +8,7 @@ with npm: `npm install front-end-min`
 
 compressResizeBlobify is a function that accepts a file and options object.
 
+### file
 file (required) - 
 image url | image blob data | an image file
 if not added the functions fails immediately and returns an error.
