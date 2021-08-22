@@ -10,6 +10,4 @@ module.exports = {
             type: 'umd',
         },
     },
-    "main": "dist/front-end-min.js",
-    "module": "index.js",
 };

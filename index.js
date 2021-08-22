@@ -24,7 +24,7 @@
 // minify an image
 // image to blob
 //
-export const Mini = (function () {
+const Mini = (function () {
 
     function calculateSize(img, aspectRatioPreserved, inputWidth, inputHeight) {
         let width = img.width;
