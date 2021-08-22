@@ -2,7 +2,9 @@
 
 # How to install
 
-with npm: `npm install front-end-min`
+via npm: `npm install front-end-min`
+
+via unpkg: `<script src="https://unpkg.com/front-end-min@latest"></script>`
 
 # Documentataion
 
