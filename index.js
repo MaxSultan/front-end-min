@@ -161,8 +161,8 @@ const Mini = (function () {
                         smoothCanvas(img, canvas, canvas2, smoothingOptions, newWidth, newHeight).then((canvas) => {
                             ret.canvas = canvas
                             canvasToBlob(ret.canvas)
-                                .then(({ dataURL, objUrl, blob }) => {
-                                    ret.dataURL = dataURL;
+                                .then(({ dataUrl, objUrl, blob }) => {
+                                    ret.dataUrl = dataUrl;
                                     ret.objUrl = objUrl;
                                     ret.blob = blob;
                                     resolve(ret);
