@@ -6,12 +6,14 @@ with npm: `npm install front-end-min`
 
 # Documentataion
 
-compressResizeBlobify is a function that accepts an options object. The object has the following properties:
+compressResizeBlobify is a function that accepts a file and options object.
 
 file (required) - 
 image url | image blob data | an image file
 if not added the functions fails immediately and returns an error.
 Currently only supports .jpeg and .png files
+
+The object has the following properties:
 
 aspectRatioPreserved (Boolean) --
 true|false
