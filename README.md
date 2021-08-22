@@ -6,6 +6,18 @@ with npm: `npm install front-end-min`
 
 # Documentataion
 
+all functions imported from front-end-min use the Mini namespace.
+
+Example: 
+```
+Mini.compressResizeBlobify(file, {
+        aspectRatioPreserved: aspectRatioPreserved,
+        inputWidth: inputWidth,
+        inputHeight: inputHeight,
+        smoothingOptions: smoothingOptions,
+        quality: quality
+      }).then(result => { console.log(result) })
+```
 compressResizeBlobify is a function that accepts a file and options object.
 
 ### file
@@ -52,3 +64,5 @@ TODO: add documentation for the following functions:
         resize
         canvasToBlob
         blobToDataUrl
+
+
