@@ -68,3 +68,4 @@ TODO: add documentation for the following functions:
         blobToDataUrl
 
 
+Example open source project using front-end-min can bee seen here: https://github.com/MaxSultan/img-compressor 
