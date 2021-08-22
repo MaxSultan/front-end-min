@@ -17,5 +17,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/MaxSultan/front-end-min"
+  },
+  "devDependencies": {
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
   }
 }

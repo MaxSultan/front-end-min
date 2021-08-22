@@ -6,7 +6,7 @@ with npm: `npm install front-end-min`
 
 # Documentataion
 
-resizer is a function that accepts an options object. The object has the following properties:
+compressResizeBlobify is a function that accepts an options object. The object has the following properties:
 
 file (required) - 
 image url | image blob data | an image file
@@ -43,3 +43,9 @@ a local url that can be used to view the image on your local machine
 
 dataUrl (String) -- 
 a url that can be used to access the image from any client
+
+TODO: add documentation for the following functions: 
+        smoothCanvas
+        resize
+        canvasToBlob
+        blobToDataUrl
