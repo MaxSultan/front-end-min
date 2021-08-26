@@ -1,1 +1,1 @@
-!function(e,o){"object"==typeof exports&&"object"==typeof module?module.exports=o():"function"==typeof define&&define.amd?define([],o):"object"==typeof exports?exports["front-end-min"]=o():e["front-end-min"]=o()}(self,(function(){return{}}));
+!function(e,o){"object"==typeof exports&&"object"==typeof module?module.exports=o():"function"==typeof define&&define.amd?define([],o):"object"==typeof exports?exports["front-end-min"]=o():e["front-end-min"]=o()}(self,(function(){return void 0,{}}));
