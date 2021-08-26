@@ -26,12 +26,7 @@
 const Mini = (function () {
   'use strict';
 
-  function calculateSize(
-    img,
-    aspectRatioPreserved,
-    inputWidth,
-    inputHeight,
-  ) {
+  function calculateSize(img, aspectRatioPreserved, inputWidth, inputHeight) {
     let width = img.width;
     let height = img.height;
     let aspectRatio = width / height;
@@ -39,14 +34,18 @@ const Mini = (function () {
       return Math.round(dimension * aspectRatio);
     };
 
+    const dividedByAspectRatio = (dimension) => {
+      return Math.round(dimension / aspectRatio);
+    };
+
     if (aspectRatioPreserved) {
       if (inputWidth && inputHeight) {
         if (aspectRatio > 1) {
+          height = dividedByAspectRatio(inputWidth);
+          width = inputWidth;
+        } else if (aspectRatio < 1) {
           height = inputHeight;
           width = timesAspectRatio(inputHeight);
-        } else if (aspectRatio < 1) {
-          height = timesAspectRatio(inputWidth);
-          width = inputWidth;
         } else if (aspectRatio === 1) {
           if (inputHeight < inputWidth) {
             height = inputHeight;
@@ -89,21 +88,11 @@ const Mini = (function () {
     });
   }
 
-  function canvasToBlob(inputElement) {
-    const ret = {};
+  function blobifyCanvas(inputElement, quality) {
     return new Promise((resolve, reject) => {
       inputElement.toBlob(
         (blob) => {
-          ret.objUrl = window.URL.createObjectURL(blob);
-          ret.blob = blob;
-          blobToDataUrl(blob)
-            .then((dataURL) => {
-              ret.dataUrl = dataURL;
-              resolve(ret);
-            })
-            .catch(() => {
-              reject(Error('could not convert to blob'));
-            });
+          resolve(blob);
         },
         MIME_TYPE,
         quality,
@@ -111,68 +100,45 @@ const Mini = (function () {
     });
   }
 
-  function resize(
-    file,
-    aspectRatioPreserved,
-    inputWidth,
-    inputHeight,
-  ) {
+  function blobToObjectUrl(blob) {
     return new Promise((resolve, reject) => {
-      let img = new Image();
-
-      img.onerror = function () {
-        URL.revokeObjectURL(this.src);
-        reject(Error('Cannot load Image'));
-      };
-
-      img.onload = function () {
-        URL.revokeObjectURL(this.src);
-
-        const [newWidth, newHeight] = calculateSize(
-          img,
-          aspectRatioPreserved,
-          inputWidth,
-          inputHeight,
-        );
-        const canvas = document.createElement('canvas');
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-
-        const canvas2 = document.createElement('canvas');
-
-        canvas2.height = newHeight * 0.5;
-        canvas2.width = newWidth * 0.5;
-
-        resolve({ canvas, canvas2, img, newWidth, newHeight });
-      };
-
-      img.src = window.URL.createObjectURL(file);
+      resolve(URL.createObjectURL(blob));
+      reject('Could not turn blob into Object Url');
     });
   }
 
-  function smoothCanvas(
-    img,
-    canvas,
-    canvas2,
-    smoothingOptions,
-    newWidth,
-    newHeight,
-  ) {
+  function calculateNewDims(img, aspectRatioPreserved, inputWidth, inputHeight) {
+    return new Promise((resolve, reject) => {
+      const [newWidth, newHeight] = calculateSize(
+        img,
+        aspectRatioPreserved,
+        inputWidth,
+        inputHeight,
+      );
+
+      resolve({ img, newWidth, newHeight });
+      reject('Could not Resize Image');
+    });
+  }
+
+  function resizeImage(img, smoothingOptions, newWidth, newHeight) {
     return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = newWidth;
+      canvas.height = newHeight;
       const context = canvas.getContext('2d');
+
+      const canvas2 = document.createElement('canvas');
+      canvas2.height = newHeight * 0.5;
+      canvas2.width = newWidth * 0.5;
       const context2 = canvas2.getContext('2d');
+
       if (smoothingOptions === 'bi-linear') {
         context.drawImage(img, 0, 0, newWidth, newHeight);
       } else {
         // faux bi-cubic image smoothing
         context2.drawImage(img, 0, 0, canvas2.width, canvas2.height);
-        context2.drawImage(
-          img,
-          0,
-          0,
-          canvas2.width * 0.5,
-          canvas2.height * 0.5,
-        );
+        context2.drawImage(img, 0, 0, canvas2.width * 0.5, canvas2.height * 0.5);
         context.drawImage(
           canvas2,
           0,
@@ -189,47 +155,67 @@ const Mini = (function () {
     });
   }
 
-  return {
-    compressResizeBlobify: function (
-      file,
-      {
-        aspectRatioPreserved = true,
-        inputWidth,
-        inputHeight,
-        smoothingOptions = 'bi-linear',
-        quality = 0.7,
-      },
-    ) {
-      const ret = {};
-      return new Promise((resolve, reject) => {
-        resize(file, aspectRatioPreserved, inputWidth, inputHeight)
-          .then(({ canvas, canvas2, img, newWidth, newHeight }) => {
-            smoothCanvas(
-              img,
-              canvas,
-              canvas2,
-              smoothingOptions,
-              newWidth,
-              newHeight,
-            ).then((canvas) => {
-              ret.canvas = canvas;
-              canvasToBlob(ret.canvas).then(
-                ({ dataUrl, objUrl, blob }) => {
-                  ret.dataUrl = dataUrl;
-                  ret.objUrl = objUrl;
-                  ret.blob = blob;
-                  resolve(ret);
-                },
-              );
-            });
-          })
-          .catch((error) => reject(error));
-      });
+  function imageify(input) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.onload = () => {
+        URL.revokeObjectURL(img.src);
+        resolve(img);
+      };
+
+      img.onerror = (error) => {
+        URL.revokeObjectURL(img.src);
+        reject(error);
+      };
+
+      img.src = window.URL.createObjectURL(input);
+    });
+  }
+
+  function compressResizeBlobify(
+    file,
+    {
+      aspectRatioPreserved = true,
+      inputWidth,
+      inputHeight,
+      smoothingOptions = 'bi-linear',
+      quality = 0.7,
     },
-    smoothCanvas: smoothCanvas,
-    resize: resize,
-    canvasToBlob: canvasToBlob,
+  ) {
+    const ret = {};
+    return new Promise((resolve, reject) => {
+      imageify(file)
+        .then((img) => {
+          calculateNewDims(img, aspectRatioPreserved, inputWidth, inputHeight).then(
+            ({ img, newWidth, newHeight }) => {
+              resizeImage(img, smoothingOptions, newWidth, newHeight).then((canvas) => {
+                ret.canvas = canvas;
+                blobifyCanvas(canvas, quality).then((blob) => {
+                  ret.blob = blob;
+                  blobToDataUrl(blob).then((dataURL) => {
+                    ret.dataUrl = dataURL;
+                    blobToObjectUrl(blob).then((objUrl) => {
+                      ret.objUrl = objUrl;
+                      resolve(ret);
+                    });
+                  });
+                });
+              });
+            },
+          );
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
+  return {
+    compressResizeBlobify,
+    resizeImage,
+    calculateNewDims,
+    blobifyCanvas,
     blobToDataUrl,
-    blobToDataUrl,
+    blobToObjectUrl,
+    imageify,
   };
 })();
