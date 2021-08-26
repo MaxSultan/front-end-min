@@ -156,8 +156,6 @@ const Mini = (function () {
   }
 
   function imageify(input) {
-    // what can we input here
-    // What types of input do we support? File, Url, Blob?
     return new Promise((resolve, reject) => {
       const img = new Image();
 

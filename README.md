@@ -14,7 +14,11 @@ via unpkg: `<script src="https://unpkg.com/front-end-min@latest"></script>`
 
 all functions imported from front-end-min use the Mini namespace.
 
-Example:
+---
+
+## compressResizeBlobify
+
+> Resize an image, compress using lossy compression, and turn an image into a blob
 
 ```js
 Mini.compressResizeBlobify(file, {
@@ -28,17 +32,9 @@ Mini.compressResizeBlobify(file, {
 });
 ```
 
----
+## arguments
 
-## compressResizeBlobify
-
-> Resize an image, compress using lossy compression, or turn an image into a blob
-
-a function that accepts a file and options object. Returns a promise object.
-
-### arguments
-
----
+a file and an options object
 
 ### file
 
@@ -74,11 +70,9 @@ Or how to come up with new pixels in the case of an enlarged image
 positive floating point number from 0 - 1
 represets the degree of image quality with 1 being highest quality and 0 being the lowest
 
-### return
+## return
 
----
-
-a promise object where the following preoperties can be accessed in the `.then()`
+a promise object with access to the following properties
 
 #### blob (blob)
 
@@ -96,145 +90,179 @@ a url that can be used to access the image from any client
 
 an HTML element that fits the maximum dimensions specified in inputHeight/inputWidth
 
-## smoothCanvas
+---
 
-Example:
+# imageify
+
+> turns a file containing image data into an instance of the HTMLImageElement
 
 ```js
-Mini.smoothCanvas(img, canvas, canvas2, smoothingOptions, newWidth, newHeight);
+Mini.imageify(file).then((image) => {
+  document.append(image);
+});
 ```
 
 ### arguments
 
-#### img
-
-Image Object created by `new Image()`
-
-#### canvas
-
-A canvas element with the propper width and height set
-
-#### canvas2
-
-a canvas element with height and width equal to half the target height (only used in bi-cubic smoothing)
-
-#### newWidth/newHeight (Number)
-
-height and width of the image to be drawn on the canvas context
+| arguments | description                  |
+| --------- | ---------------------------- |
+| file      | a file containing image data |
 
 ### return
 
-returns a promise object that can access the canvas with the smoothed image returned in the `.then()`
+| properties | description                         |
+| ---------- | ----------------------------------- |
+| image      | an instance of the HTMLImageElement |
 
-## resize
+---
 
-a function that accepts a file, an indicator as to whether the user wants to preserve or deisregard the aspect ratio, an maximum dimensions for width and hight of the image. returns a promise
+# calculateNewDims
 
-Example:
+> returns new dimensions with respect to the aspect ratio of the image, given an image and maximum dimensions
 
 ```js
-Mini.resize(file, aspectRatioPreserved, inputWidth, inputHeight).then(
-  ({ canvas, canvas2, img, newWidth, newHeight }) => {
-    console.table({
-      canvas: canvas,
-      canvas2: canvas2,
-      img: img,
-      newWidth: newWidth,
-      newHeight: newHeight,
-    });
+Mini.calculateNewDims(img, aspectRatioPreserved, inputWidth, inputHeight).then(
+  ({ newHeight, newWidth }) => {
+    console.log(newHeight, newWidth);
   },
 );
 ```
 
 ### arguments
 
-#### file
+(img, aspectRatioPreserved, inputWidth, inputHeight)
 
-image url | image blob data | an image file
-if not added the functions fails immediately and returns an error.
-Currently only supports .jpeg and .png files
-
-#### aspectRatioPreserved (Boolean)
-
-true|false
-true - keep the proportions of the image (aspect ratio) the same
-false - disregard the aspect ratio of the image
-
-#### inputHeight/inputWidth (Number)
-
-a number greater than 0 measured in pixels. keep in mind that input height and input width represent the maximum dimensions
-and may not be the exact dimensions if the aspect ratio is preserved
+| arguments              | description                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| img                    | an instance of the HTMLImageElement                                                            |
+| aspectRatioPreserved   | Boolean - default is true                                                                      |
+| inputWidth/inputHeight | a number greater than 0 measured in pixels. represents MAXIMUM dimensions not exact dimensions |
 
 ### return
 
-returns a promise object with the following properties accessable in a `.then()`. 2 canvas elements, an image, a new width, and a new height
+returns a promise with a newHeight and newWidth property
 
-## canvasToBlob
-
-accepts a canvas element and returns a promise object
-
-Example:
-
-```js
-Mini.canvasToBlob(canvas)
-    .then(({ dataUrl, objUrl, blob }) => {
-        console.table({
-            "dataUrl": dataUrl;
-            "objUrl": objUrl;
-            "blob": blob;
-        })
-    }
-```
-
-### arguments
-
-#### inputElement (HTML Element)
-
-a canvas element with an image drawn in the context
-
-### return
-
-returns a promise object with the following properties accessable in a `.then()`.
-
-#### blob (blob)
-
-binary encoding of the image data
-
-#### objUrl (String)
-
-a local url that can be used to view the image on your local machine
-
-#### dataUrl (String)
-
-a url that can be used to access the image from any client
-
-## blobToDataUrl
-
-accepts blob data and returns a promise object
-
-Example:
-
-```js
-blobToDataUrl(blob)
-    .then((dataURL) => {
-        console.log(dataUrl)
-    }
-```
-
-### arguments
-
-#### blob
-
-a blob representing file data
-
-### return
-
-returns a promise that can access a data url in the `.then()`
+| properties         | description             |
+| ------------------ | ----------------------- |
+| newHeight/NewWidth | Number - new dimensions |
 
 ---
 
-# Dependencies
+# resizeImage
 
-webpack and and webpack cli are included as dev dependencies
+> resizes an image and returns a canvas with the resized image drawn in the contex
 
-Example open source project using front-end-min can bee seen here: https://github.com/MaxSultan/img-compressor
+Example:
+
+```js
+Mini.resizeImage(img, smoothingOptions, newWidth, newHeight).then((canvas) => {
+  document.append(canvas);
+});
+```
+
+### arguments
+
+| arguments              | description                                 | example                                    |
+| ---------------------- | ------------------------------------------- | ------------------------------------------ |
+| file                   | image data (jpeg, png)                      | image url \| image blob data \| image file |
+| smoothingOptions       | String - represents image interpolation     | "bi-linear"                                |
+| inputHeight/inputWidth | a number greater than 0 measured in pixels. | 0 - Infinity                               |
+
+### return
+
+returns a promise object with a canvas property
+
+| properties | description                                         |
+| ---------- | --------------------------------------------------- |
+| canvas     | a canvas element with an image drawn in the context |
+
+---
+
+# blobifyCanvas
+
+> turns a canvas element into a binary encoding (blob)
+
+```js
+Mini.blobifyCanvas(canvas).then((blob) => {
+  console.log(blob);
+});
+```
+
+### arguments
+
+| arguments | description                                         |
+| --------- | --------------------------------------------------- |
+| canvas    | a canvas element with an image drawn in the context |
+
+### return
+
+returns a promise with a blob property
+
+| properties | description                         |
+| ---------- | ----------------------------------- |
+| blob       | binary encoding of a canvas element |
+
+---
+
+# blobToDataUrl
+
+> accepts blob data and returns a promise object
+
+```js
+Mini.blobToDataUrl(blob).then((dataURL) => {
+  console.log(dataUrl);
+});
+```
+
+### arguments
+
+| arguments | description                          |
+| --------- | ------------------------------------ |
+| blob      | a binary representation of file data |
+
+### return
+
+returns a promise object with a dataUrl property
+
+| properties | description                                  |
+| ---------- | -------------------------------------------- |
+| dataUrl    | uniform resource locator that works anywhere |
+
+---
+
+# blobToObjectUrl(blob)
+
+> turns a blob into an object Url
+
+```js
+Mini.blobToObjectUrl(blob).then((objUrl) => {
+  console.log(objUrl);
+});
+```
+
+### arguments
+
+| arguments | description                          |
+| --------- | ------------------------------------ |
+| blob      | a binary representation of file data |
+
+### return
+
+returns a promise object with a object url property
+
+| properties | description                                                    |
+| ---------- | -------------------------------------------------------------- |
+| objUrl     | uniform resource locator that works only on your local machine |
+
+---
+
+# Dependancies
+
+none
+
+---
+
+# Example Projects
+
+Example open source project using front-end-min can bee seen here:
+https://github.com/MaxSultan/img-compressor
