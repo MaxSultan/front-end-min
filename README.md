@@ -1,10 +1,14 @@
 # Minify and resize images on the frontend
 
+---
+
 # How to install
 
 via npm: `npm install front-end-min`
 
 via unpkg: `<script src="https://unpkg.com/front-end-min@latest"></script>`
+
+---
 
 # Documentataion
 
@@ -24,9 +28,17 @@ Mini.compressResizeBlobify(file, {
 });
 ```
 
+---
+
 ## compressResizeBlobify
 
+> Resize an image, compress using lossy compression, or turn an image into a blob
+
 a function that accepts a file and options object. Returns a promise object.
+
+### arguments
+
+---
 
 ### file
 
@@ -39,75 +51,74 @@ Currently only supports .jpeg and .png files
 
 The object has the following properties:
 
-#### aspectRatioPreserved (Boolean) --
+#### aspectRatioPreserved (Boolean)
 
 true|false
 true - keep the proportions of the image (aspect ratio) the same
 false - disregard the aspect ratio of the image
 
-#### inputHeight/inputWidth (Number) --
+#### inputHeight/inputWidth (Number)
 
 a number greater than 0 measured in pixels. keep in mind that input height and input width represent the maximum dimensions
 and may not be the exact dimensions if the aspect ratio is preserved
 
-#### smoothingOptions (String) --
+#### smoothingOptions (String)
 
 "bi-cubic" | "bi-linear"
 the smoothness of the image - when images changes dimensions, information is either lost or more informaiton is needed.
 Smoothing options dictate how the decision of how to turn 4 pixels into one is made (assuming the image is shrinking)
 Or how to come up with new pixels in the case of an enlarged image
 
-#### quality (float) --
+#### quality (float)
 
 positive floating point number from 0 - 1
 represets the degree of image quality with 1 being highest quality and 0 being the lowest
 
 ### return
 
-an promise where the following preoperties can be accessed in the `.then()`
+---
 
-#### blob (blob) --
+a promise object where the following preoperties can be accessed in the `.then()`
+
+#### blob (blob)
 
 binary encoding of the image data
 
-#### objUrl (String) --
+#### objUrl (String)
 
 a local url that can be used to view the image on your local machine
 
-#### dataUrl (String) --
+#### dataUrl (String)
 
 a url that can be used to access the image from any client
+
+#### canvas (HTML Element)
+
+an HTML element that fits the maximum dimensions specified in inputHeight/inputWidth
 
 ## smoothCanvas
 
 Example:
 
 ```js
-Mini.smoothCanvas(
-  img,
-  canvas,
-  canvas2,
-  smoothingOptions,
-  newWidth,
-  newHeight,
-);
+Mini.smoothCanvas(img, canvas, canvas2, smoothingOptions, newWidth, newHeight);
 ```
 
 ### arguments
 
-#### img --
+#### img
 
 Image Object created by `new Image()`
 
-#### canvas --
+#### canvas
 
 A canvas element with the propper width and height set
 
-#### canvas2 --
+#### canvas2
 
 a canvas element with height and width equal to half the target height (only used in bi-cubic smoothing)
 
-#### newWidth/newHeight (Number) --
+#### newWidth/newHeight (Number)
 
 height and width of the image to be drawn on the canvas context
 
@@ -143,13 +154,13 @@ image url | image blob data | an image file
 if not added the functions fails immediately and returns an error.
 Currently only supports .jpeg and .png files
 
-#### aspectRatioPreserved (Boolean) --
+#### aspectRatioPreserved (Boolean)
 
 true|false
 true - keep the proportions of the image (aspect ratio) the same
 false - disregard the aspect ratio of the image
 
-#### inputHeight/inputWidth (Number) --
+#### inputHeight/inputWidth (Number)
 
 a number greater than 0 measured in pixels. keep in mind that input height and input width represent the maximum dimensions
 and may not be the exact dimensions if the aspect ratio is preserved
@@ -177,7 +188,7 @@ Mini.canvasToBlob(canvas)
 
 ### arguments
 
-#### inputElement (HTML Element) --
+#### inputElement (HTML Element)
 
 a canvas element with an image drawn in the context
 
@@ -185,15 +196,15 @@ a canvas element with an image drawn in the context
 
 returns a promise object with the following properties accessable in a `.then()`.
 
-#### blob (blob) --
+#### blob (blob)
 
 binary encoding of the image data
 
-#### objUrl (String) --
+#### objUrl (String)
 
 a local url that can be used to view the image on your local machine
 
-#### dataUrl (String) --
+#### dataUrl (String)
 
 a url that can be used to access the image from any client
 
@@ -212,13 +223,15 @@ blobToDataUrl(blob)
 
 ### arguments
 
-#### blob --
+#### blob
 
 a blob representing file data
 
 ### return
 
 returns a promise that can access a data url in the `.then()`
+
+---
 
 # Dependencies
 
