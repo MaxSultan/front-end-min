@@ -1,28 +1,3 @@
-// if(file.type.match(/^image\//)) file =
-// if (file) file.getAsFile();
-
-// what happens if we call this on a file
-
-/*  possible file arguments - 
-    url
-    uploaded file
-    pasted file
-    image blob
- 
-    How is an image object represented? 
-*/
-
-// TODO: determine what type of input it is
-// how do i detect the type of an input?
-
-// is it usable image data or not?
-// if usable, is it a file, url, image blob
-// if not throw an error
-
-// resize an image
-// minify an image
-// image to blob
-//
 const Mini = (function () {
   'use strict';
 
